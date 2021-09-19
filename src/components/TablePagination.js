@@ -45,8 +45,13 @@ function TablePagination(props) {
     props.changePage(page);
   };
 
-  const { count, options, rowsPerPage, page } = props;
+  let { count, options, rowsPerPage, page } = props;
   const textLabels = options.textLabels.pagination;
+
+  const rangeLabel = (from, to, count) =>
+    rowsPerPage === 'All' ? '' : `${from}-${to} ${textLabels.displayRows} ${count}`;
+
+  const displayRowsPerPage = rowsPerPage === 'All' ? 'All' : rowsPerPage;
 
   return (
     <MuiTableFooter>
@@ -72,10 +77,10 @@ function TablePagination(props) {
                 selectRoot: classes.selectRoot,
               }}
               count={count}
-              rowsPerPage={rowsPerPage}
+              rowsPerPage={displayRowsPerPage}
               page={getPageValue(count, rowsPerPage, page)}
               labelRowsPerPage={textLabels.rowsPerPage}
-              labelDisplayedRows={({ from, to, count }) => `${from}-${to} ${textLabels.displayRows} ${count}`}
+              labelDisplayedRows={({ from, to, count }) => rangeLabel(from, to, count)}
               backIconButtonProps={{
                 id: 'pagination-back',
                 'data-testid': 'pagination-back',
@@ -116,7 +121,7 @@ TablePagination.propTypes = {
   /** Current page index */
   page: PropTypes.number.isRequired,
   /** Total number allowed of rows per page */
-  rowsPerPage: PropTypes.number.isRequired,
+  rowsPerPage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   /** Callback to trigger rows per page change */
   changeRowsPerPage: PropTypes.func.isRequired,
 };

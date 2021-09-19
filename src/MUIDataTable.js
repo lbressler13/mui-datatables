@@ -243,6 +243,7 @@ class MUIDataTable extends React.Component {
         PropTypes.oneOf([STP.REPLACE, STP.ABOVE, STP.NONE]),
       ]),
       setTableProps: PropTypes.func,
+      showAllRowsOption: PropTypes.bool,
       sort: PropTypes.bool,
       sortOrder: PropTypes.object,
       viewColumns: PropTypes.oneOf([true, false, 'true', 'false', 'disabled']),
@@ -414,6 +415,7 @@ class MUIDataTable extends React.Component {
     serverSide: false,
     serverSideFilterList: null,
     setTableProps: () => ({}),
+    showAllRowsOption: true, // TODO: set to false
     sort: true,
     sortFilterList: true,
     tableBodyHeight: 'auto',
@@ -530,13 +532,15 @@ class MUIDataTable extends React.Component {
   }
 
   validateOptions(options) {
+    const optionIsInvalid = (option) => isNaN(option) && option !== 'All';
+
     if (options.serverSide && options.onTableChange === undefined) {
       throw Error('onTableChange callback must be provided when using serverSide option');
     }
     if (options.expandableRows && options.renderExpandableRow === undefined) {
       throw Error('renderExpandableRow must be provided when using expandableRows option');
     }
-    if (options.rowsSelected && Array.isArray(options.rowsSelected) && options.rowsSelected.some(isNaN)) {
+    if (options.rowsSelected && Array.isArray(options.rowsSelected) && options.rowsSelected.some(optionIsInvalid)) {
       warnInfo('When using the rowsSelected option, must be provided an array of numbers only.');
     }
   }
@@ -561,6 +565,10 @@ class MUIDataTable extends React.Component {
       }
       return acc;
     }, {});
+
+    if (this.options['showAllRowsOption']) {
+      optState['rowsPerPageOptions'].push('All');
+    }
 
     this.validateOptions(optState);
     return optState;

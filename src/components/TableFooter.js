@@ -67,7 +67,7 @@ TableFooter.propTypes = {
   /** Current page index */
   page: PropTypes.number.isRequired,
   /** Total number allowed of rows per page */
-  rowsPerPage: PropTypes.number.isRequired,
+  rowsPerPage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   /** Callback to trigger rows per page change */
   changeRowsPerPage: PropTypes.func.isRequired,
   /** Callback to trigger page change */

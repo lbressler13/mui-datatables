@@ -30,6 +30,10 @@ function warnInfo(warning, consoleWarnings = true) {
 }
 
 function getPageValue(count, rowsPerPage, page) {
+  if (rowsPerPage === 'All') {
+    return 0;
+  }
+
   const totalPages = count <= rowsPerPage ? 1 : Math.ceil(count / rowsPerPage);
 
   // `page` is 0-indexed
